@@ -25,17 +25,17 @@ jobs:
         run: python get_lc.py
 
       - name: Deploy dynamic.m3u to Gist
-        uses: exuanbo/actions-deploy-gist@v1
+        uses: danielmcconville/gist-sync-file-action@v2.1.0
         with:
-          token: ${{ secrets.GIST_TOKEN }}
-          gist_id: ${{ secrets.GIST_ID }}
-          file_path: dynamic.m3u
-          file_type: text
+          gistPat: ${{ secrets.GIST_TOKEN }}
+          gistId: ${{ secrets.GIST_ID }}
+          action: update
+          filename: dynamic.m3u
 
       - name: Deploy log.txt to Gist
-        uses: exuanbo/actions-deploy-gist@v1
+        uses: danielmcconville/gist-sync-file-action@v2.1.0
         with:
-          token: ${{ secrets.GIST_TOKEN }}
-          gist_id: ${{ secrets.GIST_ID }}
-          file_path: log.txt
-          file_type: text
+          gistPat: ${{ secrets.GIST_TOKEN }}
+          gistId: ${{ secrets.GIST_ID }}
+          action: update
+          filename: log.txt
