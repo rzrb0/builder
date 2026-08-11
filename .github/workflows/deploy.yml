@@ -18,24 +18,24 @@ jobs:
       - name: Install Python dependencies
         run: pip install requests
 
-      - name: Update dynamic.m3u (Supabase), log.txt
+      - name: Update dynamic.m3u, log.txt
         env:
           SUPABASE_TOKEN: ${{ secrets.SUPABASE_TOKEN }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
         run: python get_lc.py
 
       - name: Deploy dynamic.m3u to Gist
-        uses: danielmcconville/gist-sync-file-action@v2.1.0
+        uses: exuanbo/actions-deploy-gist@v1
         with:
-          gistPat: ${{ secrets.GIST_TOKEN }}
-          gistId: ${{ secrets.GIST_ID }}
-          action: update
-          filename: dynamic.m3u
+          token: ${{ secrets.GIST_TOKEN }}
+          gist_id: ${{ secrets.GIST_ID }}
+          file_path: dynamic.m3u
+          file_type: text
 
       - name: Deploy log.txt to Gist
-        uses: danielmcconville/gist-sync-file-action@v2.1.0
+        uses: exuanbo/actions-deploy-gist@v1
         with:
-          gistPat: ${{ secrets.GIST_TOKEN }}
-          gistId: ${{ secrets.GIST_ID }}
-          action: update
-          filename: log.txt
+          token: ${{ secrets.GIST_TOKEN }}
+          gist_id: ${{ secrets.GIST_ID }}
+          file_path: log.txt
+          file_type: text
