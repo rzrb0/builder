@@ -29,7 +29,7 @@ def get_all_channels():
     except Exception as e:
         print(f"⚠️  Errore Supabase: {e}", file=sys.stderr)
         with open(LOG_FILE, 'w') as f:
-            f.write(str(TIME) + "\nErrore: " + str(e))
+            f.write(f"{TIME}\nErrore: {e}")
         return None
 
 def parse_old_file(filepath):
@@ -91,7 +91,7 @@ def main():
     print("📡 Recupero canali da Supabase...")
     supabase_data = get_all_channels()
     if supabase_data is None:
-        print("⚠️ Supabase irraggiungibile. La lista non verrà modificata.")
+        print("⚠️  Supabase irraggiungibile. La lista non verrà modificata.")
         # Se il file esiste già, non facciamo nulla; altrimenti errore
         if not os.path.exists(OLD_FILE):
             print("❌ Il file dynamic.m3u non esiste e non possiamo generarlo.")
@@ -107,6 +107,7 @@ def main():
         sys.exit(1)
 
     updated_blocks = []
+    tally = 0
     for block in old_blocks:
         name = block['name']
         sup_item = find_in_supabase(name, supabase_channels)
@@ -131,18 +132,19 @@ def main():
                 new_lines.extend(old_kodis)
             new_lines.append(mpd + '\n')
             updated_blocks.append(''.join(new_lines))
+            tally += 1
         else:
             # Canale non trovato in Supabase: mantieni il blocco originale
             updated_blocks.append(''.join(block['lines']))
 
-    # Scrivi il file
+    # Scrivi i file
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
         f.write("#EXTM3U\n")
         for blk in updated_blocks:
             f.write(blk)
     print(f"✅ dynamic.m3u aggiornato ({len(old_blocks)} canali).")
     with open(LOG_FILE, 'w') as f:
-        f.write(str(TIME) + "\nPlaylist aggiornata.")
+        f.write(f"{TIME}\n{tally} canali su {len(old_blocks)} aggiornati.")
 
 if __name__ == "__main__":
     main()
