@@ -2,16 +2,11 @@ import requests
 import sys
 import os
 import json
-from datetime import datetime
-from zoneinfo import ZoneInfo
 
 SUPABASE_TOKEN = os.getenv("SUPABASE_TOKEN")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
-CATEGORY_NAME = "SKY ITALIA"
-OLD_FILE = "dynamic.m3u"
-OUTPUT_FILE = "dynamic.m3u"
-LOG_FILE = "log.txt"
-TIME = datetime.now(tz=ZoneInfo("Europe/Rome")).strftime("%Y-%m-%d %H:%M:%S %Z")
+CATEGORY_NAMES = {"sky italia", "dazn", "timvision"}
+PLAY_FILE = "dynamic.m3u"
 
 def get_all_channels():
     # Recupera tutti i canali da Supabase.
@@ -28,15 +23,13 @@ def get_all_channels():
         return r.json()
     except Exception as e:
         print(f"⚠️  Errore Supabase: {e}", file=sys.stderr)
-        with open(LOG_FILE, 'w') as f:
-            f.write(f"{TIME}\nErrore: {e}")
         return None
 
 def parse_old_file(filepath):
     """
-    Legge il vecchio dynamic.m3u e restituisce una lista ordinata di blocchi.
+    Legge la vecchia playlist e restituisce una lista ordinata di blocchi.
     Ogni blocco è un dizionario con chiavi: 'lines' (tutte le righe del blocco),
-    'name' (normalizzato), 'group', 'logo', 'url'.
+    'name' (normalizzato), 'url'.
     """
     if not os.path.exists(filepath):
         return []
@@ -53,14 +46,6 @@ def parse_old_file(filepath):
             block_start = i
             # Estrai nome
             name = line.split(',', 1)[-1].strip()
-            # Estrai gruppo
-            group = "INTRATTENIMENTO"
-            grp_match = line.find('group-title="')
-            if grp_match != -1:
-                start = grp_match + len('group-title="')
-                end = line.find('"', start)
-                if end != -1:
-                    group = line[start:end]
             i += 1
             while i < len(lines) and not lines[i].strip().startswith('http'):
                 i += 1
@@ -69,7 +54,6 @@ def parse_old_file(filepath):
                 blocks.append({
                     'lines': lines[block_start:i+1],  # tutte le righe del blocco
                     'name': name.strip().lower(),
-                    'group': group,
                     'url': url
                 })
         else:
@@ -93,21 +77,20 @@ def main():
     if supabase_data is None:
         print("⚠️  Supabase irraggiungibile. La lista non verrà modificata.")
         # Se il file esiste già, non facciamo nulla; altrimenti errore
-        if not os.path.exists(OLD_FILE):
-            print("❌ Il file dynamic.m3u non esiste e non possiamo generarlo.")
+        if not os.path.exists(PLAY_FILE):
+            print(f"❌ Il file {PLAY_FILE} non esiste e non possiamo generarlo.")
             sys.exit(1)
         return
     # Filtra per categoria
-    supabase_channels = [c for c in supabase_data if c.get('category', '').strip().lower() == CATEGORY_NAME.lower()]
+    supabase_channels = [c for c in supabase_data if c.get('category', '').strip().lower() in CATEGORY_NAMES]
     print(f"📌 Trovati {len(supabase_channels)} canali in Supabase.")
 
-    old_blocks = parse_old_file(OLD_FILE)
+    old_blocks = parse_old_file(PLAY_FILE)
     if not old_blocks:
-        print("❌ Il file dynamic.m3u è vuoto o non esiste. Nessun aggiornamento possibile.")
+        print(f"❌ Il file {PLAY_FILE} è vuoto o non esiste. Nessun aggiornamento possibile.")
         sys.exit(1)
 
     updated_blocks = []
-    tally = 0
     for block in old_blocks:
         name = block['name']
         sup_item = find_in_supabase(name, supabase_channels)
@@ -132,19 +115,16 @@ def main():
                 new_lines.extend(old_kodis)
             new_lines.append(mpd + '\n')
             updated_blocks.append(''.join(new_lines))
-            tally += 1
         else:
             # Canale non trovato in Supabase: mantieni il blocco originale
             updated_blocks.append(''.join(block['lines']))
 
-    # Scrivi i file
-    with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
+    # Scrivi il file
+    with open(PLAY_FILE, 'w', encoding='utf-8') as f:
         f.write("#EXTM3U\n")
         for blk in updated_blocks:
             f.write(blk)
-    print(f"✅ dynamic.m3u aggiornato ({len(old_blocks)} canali).")
-    with open(LOG_FILE, 'w') as f:
-        f.write(f"{TIME}\n{tally} canali su {len(old_blocks)} aggiornati.")
+    print(f"✅ {PLAY_FILE} generato con {len(old_blocks)} canali.")
 
 if __name__ == "__main__":
     main()
