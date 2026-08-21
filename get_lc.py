@@ -22,15 +22,12 @@ def get_all_channels():
         r.raise_for_status()
         return r.json()
     except Exception as e:
-        print(f"⚠️  Errore Supabase: {e}", file=sys.stderr)
+        print(f"❌ Errore nel recupero canali: {e}", file=sys.stderr)
         return None
 
 def parse_old_file(filepath):
-    """
-    Legge la vecchia playlist e restituisce una lista ordinata di blocchi.
-    Ogni blocco è un dizionario con chiavi: 'lines' (tutte le righe del blocco),
-    'name' (normalizzato), 'url'.
-    """
+    # Legge la vecchia playlist e restituisce una lista ordinata di blocchi.
+    # Ogni blocco è un dizionario con chiavi: 'lines' (tutte le righe del blocco), 'name' (normalizzato).
     if not os.path.exists(filepath):
         return []
 
@@ -50,11 +47,9 @@ def parse_old_file(filepath):
             while i < len(lines) and not lines[i].strip().startswith('http'):
                 i += 1
             if i < len(lines) and lines[i].strip().startswith('http'):
-                url = lines[i].strip()
                 blocks.append({
                     'lines': lines[block_start:i+1],  # tutte le righe del blocco
-                    'name': name.strip().lower(),
-                    'url': url
+                    'name': name.strip().lower()
                 })
         else:
             i += 1
@@ -75,7 +70,7 @@ def main():
     print("📡 Recupero canali da Supabase...")
     supabase_data = get_all_channels()
     if supabase_data is None:
-        print("⚠️  Supabase irraggiungibile. La lista non verrà modificata.")
+        print("❌ Supabase irraggiungibile. La lista non verrà modificata.")
         # Se il file esiste già, non facciamo nulla; altrimenti errore
         if not os.path.exists(PLAY_FILE):
             print(f"❌ Il file {PLAY_FILE} non esiste e non possiamo generarlo.")
@@ -124,7 +119,7 @@ def main():
         f.write("#EXTM3U\n")
         for blk in updated_blocks:
             f.write(blk)
-    print(f"✅ {PLAY_FILE} generato con {len(old_blocks)} canali.")
+    print(f"✔️ {PLAY_FILE} generato con {len(old_blocks)} canali.")
 
 if __name__ == "__main__":
     main()
