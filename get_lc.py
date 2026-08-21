@@ -86,6 +86,7 @@ def main():
         sys.exit(1)
 
     updated_blocks = []
+    tally = 0
     for block in old_blocks:
         name = block['name']
         sup_item = find_in_supabase(name, supabase_channels)
@@ -110,6 +111,7 @@ def main():
                 new_lines.extend(old_kodis)
             new_lines.append(mpd + '\n')
             updated_blocks.append(''.join(new_lines))
+            tally += 1
         else:
             # Canale non trovato in Supabase: mantieni il blocco originale
             updated_blocks.append(''.join(block['lines']))
@@ -119,7 +121,7 @@ def main():
         f.write("#EXTM3U\n")
         for blk in updated_blocks:
             f.write(blk)
-    print(f"✔️ {PLAY_FILE} generato con {len(old_blocks)} canali.")
+    print(f"✔️ {PLAY_FILE} generato con {len(old_blocks)} canali, di cui {tally} aggiornati.")
 
 if __name__ == "__main__":
     main()
