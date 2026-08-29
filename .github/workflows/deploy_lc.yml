@@ -1,4 +1,4 @@
-name: Auto Update
+name: Update Channels
 on:
   workflow_dispatch:
 
@@ -12,7 +12,7 @@ jobs:
 
       - name: Fetch current playlist from Gist
         run: |
-          curl -sL "https://gist.githubusercontent.com/rzrb0/${{ secrets.GIST_ID }}/raw/dynamic.m3u" -o dynamic.m3u
+          curl -sL "https://gist.githubusercontent.com/rzrb0/${{ secrets.GIST_ID }}/raw/channels.m3u" -o channels.m3u
           echo "File scaricato."
 
       - name: Install Python dependencies
@@ -29,5 +29,5 @@ jobs:
         with:
           token: ${{ secrets.GIST_TOKEN }}
           gist_id: ${{ secrets.GIST_ID }}
-          file_path: dynamic.m3u
+          file_path: channels.m3u
           file_type: text
