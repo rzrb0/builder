@@ -77,7 +77,7 @@ def main():
             sys.exit(1)
         return
     # Filtra per categoria
-    supabase_channels = [c for c in supabase_data if c.get('category', '').strip().lower() in CATEGORY_NAMES]
+    supabase_channels = [c for c in supabase_data if c.get('category') != None and c.get('category').strip().lower() in CATEGORY_NAMES]
     print(f"📌 Trovati {len(supabase_channels)} canali in Supabase.")
 
     old_blocks = parse_old_file(PLAY_FILE)
