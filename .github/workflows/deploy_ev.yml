@@ -1,0 +1,24 @@
+name: Update Events
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Update playlist
+        env:
+          HERO_URL: ${{ secrets.HERO_URL }}
+        run: python get_ev.py
+
+      - name: Deploy playlist to Gist
+        uses: exuanbo/actions-deploy-gist@v1
+        with:
+          token: ${{ secrets.GIST_TOKEN }}
+          gist_id: ${{ secrets.GIST_ID }}
+          file_path: events.m3u
+          file_type: text
