@@ -6,7 +6,7 @@ import json
 SUPABASE_TOKEN = os.getenv("SUPABASE_TOKEN")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 CATEGORY_NAMES = {"sky italia", "dazn", "timvision"}
-PLAY_FILE = "dynamic.m3u"
+PLAY_FILE = "channels.m3u"
 
 def get_all_channels():
     # Recupera tutti i canali da Supabase.
