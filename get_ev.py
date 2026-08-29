@@ -60,7 +60,7 @@ def main():
             f.write(line)    
 
     if events:
-        print(f"{len(events)//5} eventi trovati.")
+        print(f"Eventi trovati: {len(events)//5}")
     else:
         print("Nessun evento trovato!")
 
