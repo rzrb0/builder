@@ -8,7 +8,6 @@ import base64
 
 HERO_URL = os.getenv("HERO_URL")
 HERO_UA = "MandraKodi2@@2.2.1@@@@A7B9X2"
-VLC_UA = "Mozilla/5.0 (Web0S; Linux/SmartTV) AppleWebKit/537.41 (KHTML, like Gecko) Large Screen Safari/537.41 LG Browser/7.00.00(LGE; WEBOS1; 05.06.10; 1); webOS.TV-2014; LG NetCast.TV-2013 Compatible (LGE, WEBOS1, wireless)"
 LOGO = "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/international/dazn-int.png"
 
 
@@ -47,7 +46,7 @@ def main():
                     link = urllib.parse.unquote(arrTmp[0])
                     key = arrTmp[1]
                     events.append('\n#EXTINF:-1 tvg-logo="'+LOGO+'" group-title="DAZN",'+title)
-                    events.append('\n#EXTVLCOPT:http-user-agent='+VLC_UA)
+                    events.append('\n#KODIPROP:inputstream.adaptive.manifest_type=mpd')
                     events.append('\n#KODIPROP:inputstream.adaptive.license_type=clearkey')
                     events.append('\n#KODIPROP:inputstream.adaptive.license_key='+key)
                     events.append('\n'+link)
