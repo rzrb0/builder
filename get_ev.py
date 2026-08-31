@@ -8,7 +8,7 @@ import base64
 
 HERO_URL = os.getenv("HERO_URL")
 HERO_UA = "MandraKodi2@@2.2.1@@@@A7B9X2"
-VLC_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36"
+VLC_UA = "Mozilla/5.0 (Web0S; Linux/SmartTV) AppleWebKit/537.41 (KHTML, like Gecko) Large Screen Safari/537.41 LG Browser/7.00.00(LGE; WEBOS1; 05.06.10; 1); webOS.TV-2014; LG NetCast.TV-2013 Compatible (LGE, WEBOS1, wireless)"
 LOGO = "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/international/dazn-int.png"
 
 
