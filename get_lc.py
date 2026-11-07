@@ -22,8 +22,8 @@ def get_all_channels():
         r.raise_for_status()
         return r.json()
     except Exception as e:
-        print(f"❌ Errore nel recupero canali: {e}", file=sys.stderr)
-        return None
+        print(f"❌ Errore nel recupero canali. [{e}]", file=sys.stderr)
+        sys.exit(1)
 
 def parse_old_file(filepath):
     # Legge la vecchia playlist e restituisce una lista ordinata di blocchi.
@@ -69,10 +69,7 @@ def find_in_supabase(name, supabase_data):
 def main():
     print("📡 Recupero canali da Supabase...")
     supabase_data = get_all_channels()
-    if supabase_data is None:
-        print("❌ Supabase irraggiungibile. La lista non verrà modificata.")
-        sys.exit(1)
-
+    
     # Filtra per categoria
     supabase_channels = [c for c in supabase_data if c.get('category') != None and c.get('category').strip().lower() in CATEGORY_NAMES]
     print(f"📌 Trovati {len(supabase_channels)} canali in Supabase.")
