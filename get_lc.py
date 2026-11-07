@@ -71,6 +71,7 @@ def main():
     supabase_data = get_all_channels()
     if supabase_data is None:
         print("❌ Supabase irraggiungibile. La lista non verrà modificata.")
+        sys.exit(1)
         # Se il file esiste già, non facciamo nulla; altrimenti errore
         if not os.path.exists(PLAY_FILE):
             print(f"❌ Il file {PLAY_FILE} non esiste e non possiamo generarlo.")
