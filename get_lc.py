@@ -76,14 +76,14 @@ def main():
         if not os.path.exists(PLAY_FILE):
             print(f"❌ Il file {PLAY_FILE} non esiste e non possiamo generarlo.")
             sys.exit(1)
-        return
+
     # Filtra per categoria
     supabase_channels = [c for c in supabase_data if c.get('category') != None and c.get('category').strip().lower() in CATEGORY_NAMES]
     print(f"📌 Trovati {len(supabase_channels)} canali in Supabase.")
 
     old_blocks = parse_old_file(PLAY_FILE)
     if not old_blocks:
-        print(f"❌ Il file {PLAY_FILE} è vuoto o non esiste. Nessun aggiornamento possibile.")
+        print(f"❌ Il file {PLAY_FILE} è vuoto. Nessun aggiornamento possibile.")
         sys.exit(1)
 
     updated_blocks = []
