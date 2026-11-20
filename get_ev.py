@@ -38,8 +38,8 @@ def main():
     if data:
         try:
             for item in data["items"]:
-                target = any(i in item["title"] for i in TEAMS)
-                if target:
+                target = any(i in item["title"] for i in TEAMS) or item["title"].find("DAZN 1 (MPD)")
+                if target != -1:
                     start = item["title"].find("]")
                     end = item["title"].find("[", start)
                     title = item["title"][start + 1:end]
